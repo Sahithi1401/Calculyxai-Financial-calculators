@@ -1,0 +1,246 @@
+{
+  "version": 1,
+  "sdk_version": "0.23.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://vicqsyotbigtztnbnueb.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "calculyx-mcp",
+      "version": "0.1.0",
+      "title": "Calculyx AI"
+    },
+    "tools": [
+      {
+        "name": "calculate_sip",
+        "title": "Calculate SIP (Systematic Investment Plan)",
+        "description": "Compute the future value, total invested amount, and estimated gains of a monthly Systematic Investment Plan (SIP) given a monthly contribution, expected annual return, and investment duration in years.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "monthly": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "Monthly contribution amount (in your currency, e.g. INR or USD)."
+            },
+            "rate": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 60,
+              "description": "Expected annual return rate in percent (e.g. 12 for 12%)."
+            },
+            "years": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "Investment duration in years."
+            }
+          },
+          "required": [
+            "monthly",
+            "rate",
+            "years"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "calculate_lumpsum",
+        "title": "Calculate lumpsum future value",
+        "description": "Compute the future value and gains of a one-time (lumpsum) investment compounded annually.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "principal": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "Initial one-time investment amount."
+            },
+            "rate": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 60,
+              "description": "Expected annual return in percent."
+            },
+            "years": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "Investment duration in years."
+            }
+          },
+          "required": [
+            "principal",
+            "rate",
+            "years"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "calculate_cagr",
+        "title": "Calculate CAGR (Compound Annual Growth Rate)",
+        "description": "Compute the Compound Annual Growth Rate (CAGR) between a start value and an end value over a given number of years, along with the total multiplier.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "Starting value / initial investment."
+            },
+            "end": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "Ending value / final amount."
+            },
+            "years": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "Duration in years between start and end."
+            }
+          },
+          "required": [
+            "start",
+            "end",
+            "years"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "calculate_fire",
+        "title": "Calculate FIRE number (retirement corpus)",
+        "description": "Compute the Financial Independence / Retire Early (FIRE) number — the corpus required to sustain a given annual expense at a safe withdrawal rate — along with Lean FIRE and Fat FIRE variants.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "annualExpense": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "Expected annual expense in retirement."
+            },
+            "withdrawalRate": {
+              "description": "Safe withdrawal rate in percent (default 4).",
+              "type": "number",
+              "minimum": 1,
+              "maximum": 10
+            }
+          },
+          "required": [
+            "annualExpense"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_stock_quote",
+        "title": "Get live stock quote",
+        "description": "Fetch the latest live quote for a stock symbol. Supports US tickers (e.g. AAPL, MSFT) and Indian NSE/BSE listings (e.g. RELIANCE.NS, TCS.BO). Returns price, change, day range, and previous close.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": false,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "symbol": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 24,
+              "description": "Ticker symbol. Append .NS for NSE India or .BO for BSE India."
+            }
+          },
+          "required": [
+            "symbol"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_portfolio_summary",
+        "title": "Get my Calculyx portfolio summary",
+        "description": "Return the signed-in Calculyx user's overall portfolio: total value, total cost, unrealised gain, gain percentage, diversification score, risk band, and per-asset-class allocation. Uses live prices where available and RLS-scoped holdings.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_my_holdings",
+        "title": "List my Calculyx holdings",
+        "description": "List the signed-in Calculyx user's individual investment holdings (stocks, ETFs, mutual funds, crypto, gold, FDs, bonds, EPF, PPF, NPS). Returns symbol, name, asset class, quantity, average cost, and currency.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "assetClass": {
+              "description": "Optional: filter by a single asset class.",
+              "type": "string",
+              "enum": [
+                "stock",
+                "etf",
+                "mutual_fund",
+                "crypto",
+                "gold",
+                "fd",
+                "bond",
+                "epf",
+                "ppf",
+                "nps"
+              ]
+            },
+            "limit": {
+              "description": "Optional: max rows to return (default 50).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            }
+          }
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

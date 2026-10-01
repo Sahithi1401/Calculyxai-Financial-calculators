@@ -1,0 +1,171 @@
+import { pageHead } from "@/lib/seo";
+import { useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { useState, useRef } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { Navbar } from "@/components/finflow/navbar";
+import { Breadcrumbs } from "@/components/finflow/breadcrumbs";
+import { Footer } from "@/components/finflow/footer";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { SupportPromise } from "@/components/finflow/support-promise";
+import { Mail, Loader2 } from "lucide-react";
+import { sendContactEmail } from "@/lib/finflow/contact-email.functions";
+
+export const Route = createFileRoute("/contact")({
+  head: () =>
+    pageHead({
+      title: "Contact Support & Feedback — Calculyx AI",
+      description:
+        "Reach the Calculyx AI team directly — report a bug, request a calculator, ask about data sources, or partner with us. We reply to every message within 48h.",
+      path: "/contact",
+      crumbs: [{ name: "Home", path: "/" }, { name: "Contact", path: "/contact" }],
+    }),
+  component: ContactPage,
+});
+
+function ContactPage() {
+  const send = useServerFn(sendContactEmail);
+  const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const startedAt = useRef(Date.now());
+  const [hp, setHp] = useState("");
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (submitting) return;
+    setSubmitting(true);
+    try {
+      const res = await send({
+        data: {
+          name: name.trim(),
+          email: email.trim(),
+          subject: subject.trim(),
+          message: message.trim(),
+          hp,
+          t: startedAt.current,
+        },
+      });
+      if (res.sent) {
+        setName(""); setEmail(""); setSubject(""); setMessage("");
+        navigate({ to: "/thank-you", search: { source: "contact" } });
+      } else if (res.reason === "rate_limited") {
+        toast.error("Too many messages", { description: "Please wait a few minutes before sending another." });
+      } else if (res.reason === "not_configured") {
+        toast.error("Email is not configured yet", { description: "Please email balaji04@calculyxai.online directly." });
+      } else {
+        toast.error("Could not send message", { description: "Please try again or email balaji04@calculyxai.online." });
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Please try again.";
+      toast.error("Could not send message", { description: msg });
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <div className="bg-page-gradient min-h-screen">
+      <Navbar />
+      <main className="pt-24">
+        <Breadcrumbs
+          items={[{ name: "Home", path: "/" }, { name: "Contact", path: "/contact" }]}
+          className="pt-4"
+        />
+        <div className="mx-auto max-w-3xl px-6 py-12">
+          <div className="text-sm font-medium text-primary">Get in touch</div>
+          <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight sm:text-5xl">
+            Contact <span className="font-serif italic text-primary">us</span>
+          </h1>
+          <p className="mt-4 max-w-xl text-muted-foreground">
+            Feedback, feature ideas, partnerships, or a bug you found — send a message and it will land in my inbox.
+          </p>
+
+          <div className="mt-6 inline-flex items-center gap-2 rounded-full border bg-card/60 px-4 py-2 text-sm">
+            <Mail className="h-4 w-4 text-primary" />
+            <a href="mailto:balaji04@calculyxai.online" className="font-medium hover:text-primary">
+              balaji04@calculyxai.online
+            </a>
+          </div>
+
+          <SupportPromise className="mt-6" />
+
+          <form
+            onSubmit={onSubmit}
+            className="mt-10 space-y-5 rounded-2xl border bg-card/70 p-6 shadow-soft backdrop-blur-sm sm:p-8"
+          >
+            <input type="text" name="company_website" tabIndex={-1} autoComplete="off" aria-hidden="true" value={hp} onChange={(e) => setHp(e.target.value)} className="absolute -left-[9999px] h-0 w-0 opacity-0" />
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="name">Your name</Label>
+                <Input
+                  id="name"
+                  required
+                  maxLength={120}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Jane Doe"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  required
+                  maxLength={255}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="subject">Subject</Label>
+              <Input
+                id="subject"
+                required
+                maxLength={200}
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                placeholder="What's this about?"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="message">Message</Label>
+              <Textarea
+                id="message"
+                required
+                maxLength={4000}
+                rows={7}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Tell me more…"
+              />
+              <div className="text-right text-xs text-muted-foreground">{message.length}/4000</div>
+            </div>
+            <div className="flex items-center justify-end gap-3">
+              <Button type="submit" disabled={submitting} size="lg" className="rounded-full">
+                {submitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending…
+                  </>
+                ) : (
+                  "Send message"
+                )}
+              </Button>
+            </div>
+          </form>
+        </div>
+        <Footer />
+      </main>
+    </div>
+  );
+}

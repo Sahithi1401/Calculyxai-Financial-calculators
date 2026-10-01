@@ -1,0 +1,36 @@
+# Calculyx AI
+
+> AI-powered financial intelligence platform: live Top-50 stocks for India (NSE) and the US with AI bull/bear cases, 15 investing calculators, tax/loan/currency planners, and daily AI-summarised market news.
+
+Calculyx AI unifies stock research, financial calculators and AI-driven insights into one dashboard. Every calculator ships with narrative AI analysis, country-aware assumptions (India, USA, UAE) and one-click PDF + Excel exports.
+
+## Pages
+
+- [Home](/): Overview of Calculyx AI — stocks, calculators, AI insights.
+- [Live Stock Hub](/stocks): Top-50 live prices for Indian & US markets with AI analysis.
+- [Investing Calculators](/investing-calculators): 15 tools — SIP, Lumpsum, CAGR, Dividend, Brokerage, FIRE, SWP, Goal Planner and more.
+- [All Calculators](/calculators): Currency, mortgage, home loan, tax, GST, salary, property, retirement, inflation, compound interest.
+- [AI Assistant](/ai): Ask financial questions and get country-aware AI answers.
+- [Market News](/news): AI-summarised financial headlines for India, USA, UAE and global markets.
+- [About](/about): What Calculyx AI is and who builds it.
+- [Contact](/contact): Get in touch.
+
+## Example stocks
+
+- [Apple (AAPL)](/stocks/AAPL): Live price, AI bull/bear case and calculators.
+- [NVIDIA (NVDA)](/stocks/NVDA): Live price, AI bull/bear case and calculators.
+- [Reliance (RELIANCE.NS)](/stocks/RELIANCE.NS): Live NSE price and AI analysis.
+
+## Example calculators
+
+- [SIP Calculator](/calc/sip): Model systematic investment plans.
+- [Home Loan EMI](/calc/home-loan): Full amortization with AI advice.
+- [Currency Converter](/calc/currency): Live FX with historical charts.
+- [Income Tax](/calc/income-tax): India, USA and UAE tax regimes.
+
+## Optional
+
+- [Privacy](/privacy)
+- [Terms](/terms)
+- [Cookies](/cookies)
+- [Disclaimer](/disclaimer)
