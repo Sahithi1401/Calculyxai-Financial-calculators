@@ -247,7 +247,7 @@ git commit -m "feat: your feature"
 
 ## 📄 License
 
-MIT © [Sai Balaji](https://calculyxai.online) — B.Tech CSE (AI & ML)
+MIT © [Sai Balaji,Sahithi Mitta](https://calculyxai.online) — B.Tech CSE (AI & ML)
 
 ---
 
